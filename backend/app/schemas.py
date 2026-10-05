@@ -244,3 +244,61 @@ class ReportEntry(BaseModel):
     field_5: str | None = None  # 设备可利用率
     field_6: str | None = None  # 故障停机时间
     field_7: str | None = None  # 月报状态
+
+
+class PlanPayload(BaseModel):
+    """应急预案台账：预案建档入参。"""
+
+    plan_code: str | None = None
+    plan_name: str | None = None
+    station: str | None = None
+
+
+class PlanVersionPayload(BaseModel):
+    """预案版本：改一版存一版，事故类别支持列表或逗号分隔文本。"""
+
+    version_no: str | None = None
+    accident_types: Any = None
+    publish_date: str | None = None
+    content_summary: str | None = None
+
+
+class VersionActionPayload(BaseModel):
+    """版本流转：提交批复、批复通过、批复驳回。"""
+
+    action: str | None = None
+    operator: str | None = None
+
+
+class DrillPayload(BaseModel):
+    """演练记录：参演人员逐条录入，记录挂在具体预案版本下。"""
+
+    version_id: int | None = None
+    drill_no: str | None = None
+    drill_date: str | None = None
+    accident_type: str | None = None
+    participants: list[str] = Field(default_factory=list)
+    conclusion: str | None = None
+
+
+class RectificationPayload(BaseModel):
+    """演练整改项：内容、责任人、整改时限。"""
+
+    content: str | None = None
+    assignee: str | None = None
+    due_date: str | None = None
+
+
+class RectificationActionPayload(BaseModel):
+    """整改流转：开始整改、闭环验证。"""
+
+    action: str | None = None
+
+
+class PlanImportPayload(BaseModel):
+    """预案导入：逐行给出预案编号、版本号等；增量导入/存量回填两种口径。"""
+
+    import_type: str = "增量导入"
+    operator: str | None = None
+    remark: str | None = None
+    rows: list[dict[str, Any]] = Field(default_factory=list)

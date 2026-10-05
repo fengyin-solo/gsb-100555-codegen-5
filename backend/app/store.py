@@ -8,6 +8,10 @@ from typing import Any
 
 from app.seed import SEED_ROWS
 
+# 台账内部表（应急预案演练台账的五张关联表）：不参与运营概览的模块计数，
+# 它们有自己的覆盖率/待办口径。
+INTERNAL_PREFIXES = ("ep_",)
+
 
 class Store:
     def __init__(self) -> None:
@@ -30,6 +34,8 @@ class Store:
     def overview(self) -> dict[str, object]:
         modules: list[dict[str, object]] = []
         for name in self.module_names():
+            if name.startswith(INTERNAL_PREFIXES):
+                continue
             rows = self.rows(name)
             modules.append({
                 "name": name,
